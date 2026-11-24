@@ -1,10 +1,11 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useApp } from '../app/appContext'
-import { ComingSoon, PageHeader } from '../app/ui'
+import { PageHeader } from '../app/ui'
 import { pendingMoments, streak, weekCount } from '../lib/moments'
 import { situationLabel } from '../lib/situations'
 import { BackupReminder, InstallHint } from './Banners'
+import { MissionsSection } from './missions/MissionsSection'
 import { useMoments } from './moments/momentsContext'
 
 function greeting(hour: number) {
@@ -72,7 +73,7 @@ export function TodayPage() {
           </Link>
         </div>
 
-        <ComingSoon step={4}>Today's three brave missions, on a five-level ladder.</ComingSoon>
+        <MissionsSection />
       </div>
     </>
   )

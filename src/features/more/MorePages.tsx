@@ -9,6 +9,7 @@ import { THEMES } from '../../lib/settings'
 
 const ITEMS = [
   { to: '/more/settings', label: 'Settings', hint: 'Your name and theme' },
+  { to: '/more/ladder', label: 'Your ladder', hint: 'Edit missions and change level' },
   { to: '/more/storage', label: 'Storage & backup', hint: 'Keep your progress safe' },
   { to: '/more/install', label: 'How to install', hint: 'Add Speak Up to your Home Screen' },
 ]

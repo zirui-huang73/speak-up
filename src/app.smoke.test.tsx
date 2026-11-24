@@ -87,6 +87,32 @@ it('runs a brave moment from Today: guess, get ready, go, report, feedback; then
   expect(el.textContent).not.toContain('How did it go?')
 })
 
+it('shows three daily missions, starts one into the moment flow, and edits the ladder', async () => {
+  const el = document.createElement('div')
+  document.body.append(el)
+  window.location.hash = '#/'
+  await act(async () => createRoot(el).render(<App />))
+  await wait(() => !!el.textContent?.includes("Today's missions") && el.querySelectorAll('a[href*="mission="]').length === 3)
+  expect(el.textContent).toContain('Level 1 · Warm-up')
+
+  const start = el.querySelector('a[href*="mission="]') as HTMLAnchorElement
+  await act(async () => start.click())
+  await wait(() => !!el.textContent?.includes('Make a quick guess'))
+
+  window.location.hash = '#/more/ladder'
+  await wait(() => !!el.textContent?.includes('Your ladder'))
+  expect(el.textContent).toContain('Level 5 · Center stage')
+  await act(async () => (el.querySelector('button[aria-label="Add mission to level 2"]') as HTMLButtonElement).click())
+  const input = el.querySelector('input[aria-label="Mission"]') as HTMLInputElement
+  const setVal = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value')!.set!
+  await act(async () => {
+    setVal.call(input, 'Say hi to the security guard')
+    input.dispatchEvent(new Event('input', { bubbles: true }))
+  })
+  await act(async () => [...el.querySelectorAll('button')].find((b) => b.textContent === 'Save')!.click())
+  await wait(() => !!el.textContent?.includes('Say hi to the security guard'))
+})
+
 it('lists plans, practices one, adds a plan, and edits the speech plan', async () => {
   const el = document.createElement('div')
   document.body.append(el)
