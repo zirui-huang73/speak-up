@@ -32,6 +32,61 @@ it('renders Today with the install hint, then settings and storage pages', async
   expect(el.textContent).toContain('Never')
 })
 
+it('runs a brave moment from Today: guess, get ready, go, report, feedback; then logs one', async () => {
+  const el = document.createElement('div')
+  document.body.append(el)
+  window.location.hash = '#/'
+  await act(async () => createRoot(el).render(<App />))
+  await wait(() => !!el.textContent?.includes("I'm about to speak"))
+
+  const btn = (label: string) => [...el.querySelectorAll('button')].find((b) => b.textContent?.trim() === label)!
+  window.location.hash = '#/moment'
+  await wait(() => !!el.textContent?.includes("What's coming up?"))
+  await act(async () => btn('Breaking a silence').click())
+  expect(el.textContent).toContain('How anxious do you expect to feel?')
+  const slider = el.querySelector('input[type="range"]') as HTMLInputElement
+  const setVal = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value')!.set!
+  await act(async () => {
+    setVal.call(slider, '8')
+    slider.dispatchEvent(new Event('input', { bubbles: true }))
+  })
+  await act(async () => btn('Likely').click())
+  await act(async () => btn('Next').click())
+  expect(el.textContent).toContain('Breathe in')
+  await act(async () => btn('Skip to my opener').click())
+  expect(el.textContent).toContain('So‿how was your weekend?')
+  expect(el.textContent).toContain('Slow – Link – Stop')
+  await act(async () => btn('Go speak').click())
+
+  await wait(() => !!el.textContent?.includes('How did it go?'))
+  const pendingLink = [...el.querySelectorAll('a')].find((a) => a.textContent?.includes('How did it go?'))!
+  await act(async () => pendingLink.click())
+  await wait(() => !!el.textContent?.includes('Did you speak?'))
+  await act(async () => btn('Yes').click())
+  const felt = el.querySelector('input[type="range"]') as HTMLInputElement
+  await act(async () => {
+    setVal.call(felt, '4')
+    felt.dispatchEvent(new Event('input', { bubbles: true }))
+  })
+  await act(async () => btn('Pass').click())
+  await act(async () => btn('Save').click())
+  await wait(() => !!el.textContent?.includes('Brave moment #1'))
+  expect(el.textContent).toContain('You expected 8. It felt like 4.')
+  expect(el.textContent).toContain('You thought you might get stuck. It was a Pass.')
+  expect(el.textContent).toContain('Your first one')
+
+  window.location.hash = '#/log'
+  await wait(() => !!el.textContent?.includes('What was it?'))
+  await act(async () => btn('Meeting').click())
+  await act(async () => btn('Not this time').click())
+  await act(async () => btn('Save').click())
+  await wait(() => !!el.textContent?.includes("That's okay."))
+
+  window.location.hash = '#/'
+  await wait(() => !!el.textContent?.includes('this week'))
+  expect(el.textContent).not.toContain('How did it go?')
+})
+
 it('lists plans, practices one, adds a plan, and edits the speech plan', async () => {
   const el = document.createElement('div')
   document.body.append(el)
