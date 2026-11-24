@@ -8,6 +8,7 @@ import {
   newMomentId,
   saveMoments,
   startMoment,
+  updateOutcome,
 } from '../../lib/moments'
 import { MomentsContext, type MomentsContextValue } from './momentsContext'
 
@@ -31,6 +32,7 @@ export function MomentsProvider({ children }: { children: ReactNode }) {
           mutate((d) => logMoment(d, input, now, id).data)
           return id
         },
+        update: (id, outcome) => mutate((d) => updateOutcome(d, id, outcome)),
         remove: (id) => mutate((d) => deleteMoment(d, id)),
       },
     [data, mutate],

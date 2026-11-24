@@ -85,6 +85,15 @@ it('runs a brave moment from Today: guess, get ready, go, report, feedback; then
   window.location.hash = '#/'
   await wait(() => !!el.textContent?.includes('this week'))
   expect(el.textContent).not.toContain('How did it go?')
+
+  window.location.hash = '#/progress'
+  await wait(() => !!el.textContent?.includes('Expected vs felt'))
+  expect(el.textContent).toContain('8.0 → 4.0')
+  expect(el.textContent).toContain('100% were a Pass')
+  expect(el.textContent).toContain('50%')
+  expect(el.textContent).toContain('Breaking a silence')
+  expect(el.textContent).toContain('Not this time')
+  expect(el.textContent).toContain('Next milestone: 10')
 })
 
 it('shows three daily missions, starts one into the moment flow, and edits the ladder', async () => {

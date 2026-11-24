@@ -7,6 +7,7 @@ export interface MomentsContextValue {
   start: (input: StartInput) => string
   complete: (id: string, outcome: Outcome) => void
   log: (input: { situation: SituationId; missionId?: string } & Outcome) => string
+  update: (id: string, outcome: Outcome) => void
   remove: (id: string) => void
 }
 

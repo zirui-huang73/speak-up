@@ -67,6 +67,8 @@ export function startMoment(
   return { data: { items: [...data.items, m] }, id }
 }
 
+const doneAt = (m: Moment) => m.completedAt ?? m.createdAt
+
 function applyOutcome(m: Moment, o: Outcome, now: number): Moment {
   return {
     ...m,
@@ -92,11 +94,17 @@ export function logMoment(
   return { data: { items: [...data.items, applyOutcome(base, input, now)] }, id }
 }
 
+/** Edits a finished moment's outcome without changing when it happened. */
+export function updateOutcome(data: MomentsData, id: string, o: Outcome): MomentsData {
+  return {
+    items: data.items.map((m) => (m.id === id && m.status !== 'pending' ? applyOutcome(m, o, doneAt(m)) : m)),
+  }
+}
+
 export const deleteMoment = (data: MomentsData, id: string): MomentsData => ({ items: data.items.filter((m) => m.id !== id) })
 
 export const pendingMoments = (data: MomentsData) => data.items.filter((m) => m.status === 'pending')
 
-const doneAt = (m: Moment) => m.completedAt ?? m.createdAt
 export const spokenMoments = (data: MomentsData) =>
   data.items.filter((m) => m.status === 'spoke').sort((a, b) => doneAt(a) - doneAt(b))
 
